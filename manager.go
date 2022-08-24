@@ -68,7 +68,7 @@ func (cfg *Config) CreateWokerPool() *Workers {
 			select {
 			case <-mgr.ticker.C:
 				for _, w := range mgr.pool {
-					mgr.Logger.Debugf("worker %d status: %s\n", w.id, w.status)
+					mgr.Logger.Debugf("[fan] worker %d status: %s\n", w.id, w.status)
 				}
 			}
 		}
@@ -96,12 +96,12 @@ func (cfg *Config) CreateWokerPool() *Workers {
 		}
 		wg.Wait()
 
-		mgr.Logger.Debug("close results/ready channels")
+		mgr.Logger.Debug("[fan] close results/ready channels")
 		close(mgr.results)
 		close(mgr.ready)
 		close(mgr.jobs)
 
-		mgr.Logger.Debug("stop progress ticker")
+		mgr.Logger.Debug("[fan] stop progress ticker")
 		mgr.ticker.Stop()
 
 		mgr.done <- true
@@ -112,11 +112,10 @@ func (cfg *Config) CreateWokerPool() *Workers {
 
 func (mgr *Workers) Work(payload interface{}) {
 	if mgr.shutdown {
-		mgr.Logger.Info("workers shutdown")
 		return
 	}
 
-	mgr.Logger.Info("processing payload")
+	mgr.Logger.Debug("[fan] processing payload")
 
 	<-mgr.ready
 	mgr.jobs <- payload
