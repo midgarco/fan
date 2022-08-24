@@ -53,7 +53,13 @@ func (cfg *Config) CreateWokerPool() *Workers {
 	mgr.jobs = make(chan interface{})
 	mgr.results = make(chan *worker.Result)
 	mgr.done = make(chan bool)
-	mgr.Logger = cfg.Logger
+
+	logger := cfg.Logger
+	if logger == nil {
+		logger = &log.DefaultLogger{}
+	}
+	mgr.Logger = logger
+
 	mgr.mu = sync.RWMutex{}
 	mgr.WorkFunc = cfg.WorkFunc
 	mgr.ResultFunc = cfg.ResultFunc
