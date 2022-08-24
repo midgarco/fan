@@ -1,0 +1,1 @@
+initial concepts for a fan out worker module
